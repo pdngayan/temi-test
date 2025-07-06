@@ -1,0 +1,87 @@
+{
+  "@@locale": "en",
+  "appTitle": "Self Care Agent",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+  "welcome": "Welcome",
+  "@welcome": {
+    "description": "Welcome message"
+  },
+  "login": "Login",
+  "@login": {
+    "description": "Login button text"
+  },
+  "logout": "Logout",
+  "@logout": {
+    "description": "Logout button text"
+  },
+  "email": "Email",
+  "@email": {
+    "description": "Email field label"
+  },
+  "password": "Password",
+  "@password": {
+    "description": "Password field label"
+  },
+  "forgotPassword": "Forgot Password?",
+  "@forgotPassword": {
+    "description": "Forgot password link text"
+  },
+  "rememberMe": "Remember me",
+  "@rememberMe": {
+    "description": "Remember me checkbox label"
+  },
+  "loginSuccessful": "Login successful!",
+  "@loginSuccessful": {
+    "description": "Login success message"
+  },
+  "loginFailed": "Invalid email or password",
+  "@loginFailed": {
+    "description": "Login failure message"
+  },
+  "accountBalance": "Account Balance",
+  "@accountBalance": {
+    "description": "Account balance label"
+  },
+  "billPayment": "Bill Payment",
+  "@billPayment": {
+    "description": "Bill payment service name"
+  },
+  "bankingServices": "Banking Services",
+  "@bankingServices": {
+    "description": "Banking services section title"
+  },
+  "helpSupport": "Help & Support",
+  "@helpSupport": {
+    "description": "Help and support section title"
+  },
+  "feedback": "Feedback",
+  "@feedback": {
+    "description": "Feedback section title"
+  },
+  "comingSoon": "This feature is coming soon!",
+  "@comingSoon": {
+    "description": "Coming soon message"
+  },
+  "goBack": "Go Back",
+  "@goBack": {
+    "description": "Go back button text"
+  },
+  "error": "Error",
+  "@error": {
+    "description": "Error title"
+  },
+  "somethingWentWrong": "Something went wrong",
+  "@somethingWentWrong": {
+    "description": "Generic error message"
+  },
+  "pageNotFound": "Page Not Found",
+  "@pageNotFound": {
+    "description": "404 page title"
+  },
+  "goHome": "Go Home",
+  "@goHome": {
+    "description": "Go home button text"
+  }
+} 

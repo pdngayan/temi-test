@@ -1,0 +1,623 @@
+# Flutter Self-Care Agent - Cursor Rules
+
+## Project Overview
+This is a Flutter application for Temi devices providing self-service banking functionality including account management, bill payments, user onboarding with KYC, help services, and feedback collection.
+
+## Architecture & Patterns
+
+### 1. BLoC Pattern Implementation
+- Use `flutter_bloc` for state management
+- Implement BLoC pattern for all business logic
+- Separate BLoCs for each feature module
+- Use Cubit for simple state management scenarios
+- Follow BLoC naming conventions: `FeatureBloc`, `FeatureEvent`, `FeatureState`
+- Always use `BlocBuilder`, `BlocListener`, and `BlocConsumer` appropriately
+
+### 2. Project Structure
+```
+lib/
+├── core/
+│   ├── constants/
+│   ├── errors/
+│   ├── network/
+│   ├── utils/
+│   └── theme/
+├── features/
+│   ├── authentication/
+│   ├── banking/
+│   ├── bill_payment/
+│   ├── onboarding/
+│   ├── help/
+│   └── feedback/
+├── shared/
+│   ├── widgets/
+│   ├── models/
+│   └── repositories/
+└── main.dart
+```
+
+### 3. Feature Module Structure
+Each feature should follow this structure:
+```
+feature_name/
+├── data/
+│   ├── datasources/
+│   ├── models/
+│   └── repositories/
+├── domain/
+│   ├── entities/
+│   ├── repositories/
+│   └── usecases/
+└── presentation/
+    ├── bloc/
+    ├── pages/
+    └── widgets/
+```
+
+## Code Quality Standards
+
+### 1. File Size Limitation
+- Maximum 200 lines per file
+- Split large files into smaller, focused modules
+- Use mixins for shared functionality
+- Extract widgets into separate files when they exceed 50 lines
+
+### 2. Naming Conventions
+- Use PascalCase for classes, enums, and typedefs
+- Use camelCase for variables, functions, and parameters
+- Use snake_case for file names
+- Use SCREAMING_SNAKE_CASE for constants
+- Prefix private members with underscore (_)
+
+### 3. Code Organization
+- Import statements order: dart libraries, flutter libraries, third-party packages, local imports
+- Group related imports together
+- Use relative imports for local files
+- Always use explicit return types for functions
+- Use const constructors wherever possible
+
+## Firebase Integration
+
+### 1. Authentication
+- Use Firebase Authentication for user management
+- Implement secure token handling
+- Use Firebase Security Rules for data protection
+- Handle authentication state changes properly
+
+### 2. Firestore Database
+- Use proper collection and document structure
+- Implement offline capabilities
+- Use Firebase Security Rules for data access control
+- Follow Firebase best practices for queries
+
+### 3. Storage
+- Use Firebase Storage for KYC documents and images
+- Implement proper file upload/download handling
+- Use compression for image uploads
+- Handle storage security rules
+
+## Security Best Practices
+
+### 1. Data Protection
+- Never store sensitive data in plain text
+- Use secure storage for tokens and credentials
+- Implement proper encryption for sensitive data
+- Validate all user inputs
+
+### 2. API Security
+- Use HTTPS for all network requests
+- Implement proper error handling without exposing sensitive information
+- Use Firebase Security Rules effectively
+- Implement rate limiting where applicable
+
+## UI/UX Guidelines
+
+### 1. Temi Device Optimization
+- Design for large tablet screens (landscape orientation)
+- Use touch-friendly UI elements (minimum 44dp touch targets)
+- Implement voice interaction capabilities
+- Consider accessibility for elderly users
+
+### 2. Design System
+- Create reusable UI components
+- Use consistent color scheme and typography
+- Implement dark/light theme support
+- Follow Material Design 3 guidelines
+
+### 3. Navigation
+- Use clear navigation patterns
+- Implement breadcrumbs for complex flows
+- Provide easy back navigation
+- Use descriptive page titles
+
+### 4. Messaging & Notifications
+- Use consistent messaging patterns across the app
+- Implement proper snackbar system for user feedback
+- Provide clear success, error, warning, and info messages
+- Use appropriate icons and colors for different message types
+- Ensure messages are accessible and readable on Temi devices
+- Implement proper timing for message display
+- Support multiple languages for all messages
+
+## Testing Strategy
+
+### 1. Unit Tests
+- Test all business logic in BLoCs
+- Test utility functions
+- Test data models and repositories
+- Aim for 80%+ code coverage
+
+### 2. Widget Tests
+- Test UI components
+- Test user interactions
+- Test state changes
+- Mock external dependencies
+
+### 3. Integration Tests
+- Test complete user flows
+- Test Firebase integration
+- Test device-specific features
+- Test offline scenarios
+
+## Performance Optimization
+
+### 1. Image Handling
+- Use appropriate image formats (WebP when possible)
+- Implement lazy loading for images
+- Use image caching
+- Optimize image sizes for different screen densities
+
+### 2. State Management
+- Dispose BLoCs properly
+- Use BlocProvider.value() for existing BLoCs
+- Implement proper stream management
+- Avoid memory leaks
+
+### 3. Network Optimization
+- Implement proper caching strategies
+- Use connection state monitoring
+- Handle offline scenarios gracefully
+- Optimize Firebase queries
+
+## Error Handling
+
+### 1. Exception Management
+- Create custom exception classes
+- Implement global error handling
+- Use proper error logging
+- Provide user-friendly error messages
+
+### 2. Network Errors
+- Handle network connectivity issues
+- Implement retry mechanisms
+- Cache data for offline use
+- Show appropriate loading states
+
+## Documentation Standards
+
+### 1. Code Documentation
+- Document all public APIs
+- Use meaningful variable and function names
+- Add inline comments for complex logic
+- Document BLoC events and states
+
+### 2. README Updates
+- Keep README current with setup instructions
+- Document environment variables
+- Include testing instructions
+- Add deployment guidelines
+
+## Dependencies Management
+
+### 1. Core Dependencies
+- flutter_bloc: ^8.1.3
+- firebase_core: ^2.24.2
+- firebase_auth: ^4.15.3
+- cloud_firestore: ^4.13.6
+- firebase_storage: ^11.6.0
+- dio: ^5.4.0
+- get_it: ^7.6.4
+- injectable: ^2.3.2
+- auto_route: ^7.8.4
+- freezed: ^2.4.6
+- json_annotation: ^4.8.1
+- flutter_localizations: ^3.0.0
+- intl: ^0.18.1
+- connectivity_plus: ^4.0.2
+- cached_network_image: ^3.3.0
+- image_picker: ^1.0.4
+- permission_handler: ^11.0.1
+- flutter_secure_storage: ^9.0.0
+- shared_preferences: ^2.2.2
+
+### 2. Development Dependencies
+- build_runner: ^2.4.7
+- freezed: ^2.4.6
+- json_serializable: ^6.7.1
+- injectable_generator: ^2.4.1
+- auto_route_generator: ^7.3.2
+- flutter_lints: ^3.0.1
+- mocktail: ^1.0.2
+
+## Git Workflow
+
+### 1. Branch Naming
+- feature/feature-name
+- bugfix/bug-description
+- hotfix/critical-fix
+- release/version-number
+
+### 2. Commit Messages
+- Use conventional commits format
+- Include ticket numbers where applicable
+- Write clear, descriptive messages
+- Keep commits atomic and focused
+
+## Code Review Guidelines
+
+### 1. Review Checklist
+- Code follows established patterns
+- No hardcoded values
+- Proper error handling
+- Tests are included
+- Documentation is updated
+- No security vulnerabilities
+
+### 2. Performance Review
+- No unnecessary rebuilds
+- Proper disposal of resources
+- Efficient database queries
+- Optimized image handling
+
+## Deployment
+
+### 1. Environment Configuration
+- Use different Firebase projects for dev/staging/prod
+- Implement proper environment variable management
+- Use build variants for different environments
+- Implement proper signing for releases
+
+### 2. CI/CD Pipeline
+- Automated testing on commits
+- Automated builds for different platforms
+- Proper versioning strategy
+- Automated deployment to app stores
+
+## Monitoring & Analytics
+
+### 1. Crash Reporting
+- Implement Firebase Crashlytics
+- Log important user actions
+- Monitor app performance
+- Track user engagement
+
+### 2. Analytics
+- Track user flows
+- Monitor feature usage
+- Implement A/B testing capabilities
+- Track business metrics
+
+## Additional Considerations
+
+### 1. Accessibility
+- Implement proper semantic labels
+- Support screen readers
+- Ensure proper contrast ratios
+- Test with accessibility tools
+
+### 2. Internationalization
+- Use Flutter's intl package
+- Externalize all strings
+- Support RTL languages
+- Consider cultural differences
+
+### 3. Banking Compliance
+- Follow PCI DSS guidelines
+- Implement proper audit trails
+- Ensure data privacy compliance
+- Regular security audits
+
+## File Templates
+
+### 1. BLoC Template
+```dart
+// feature_bloc.dart
+part of 'feature_bloc.dart';
+part 'feature_event.dart';
+part 'feature_state.dart';
+
+class FeatureBloc extends Bloc<FeatureEvent, FeatureState> {
+  FeatureBloc() : super(FeatureInitial()) {
+    on<FeatureEvent>((event, emit) {
+      // Handle events
+    });
+  }
+}
+```
+
+### 2. Repository Template
+```dart
+// feature_repository.dart
+abstract class FeatureRepository {
+  Future<Result<T>> methodName();
+}
+
+class FeatureRepositoryImpl implements FeatureRepository {
+  @override
+  Future<Result<T>> methodName() async {
+    // Implementation
+  }
+}
+```
+
+### 3. Message Service Template
+```dart
+// message_service.dart
+import 'package:flutter/material.dart';
+
+enum MessageType { success, error, warning, info }
+
+class MessageService {
+  static void showSnackbar(
+    BuildContext context,
+    String message, {
+    MessageType type = MessageType.info,
+    Duration duration = const Duration(seconds: 3),
+    String? actionLabel,
+    VoidCallback? onAction,
+  }) {
+    final snackBar = SnackBar(
+      content: _buildMessageContent(message, type),
+      backgroundColor: _getBackgroundColor(type),
+      duration: duration,
+      action: actionLabel != null
+          ? SnackBarAction(
+              label: actionLabel,
+              onPressed: onAction ?? () {},
+              textColor: Colors.white,
+            )
+          : null,
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  static Widget _buildMessageContent(String message, MessageType type) {
+    return Row(
+      children: [
+        Icon(
+          _getIcon(type),
+          color: Colors.white,
+          size: 24,
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Text(
+            message,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  static Color _getBackgroundColor(MessageType type) {
+    switch (type) {
+      case MessageType.success:
+        return Colors.green;
+      case MessageType.error:
+        return Colors.red;
+      case MessageType.warning:
+        return Colors.orange;
+      case MessageType.info:
+        return Colors.blue;
+    }
+  }
+
+  static IconData _getIcon(MessageType type) {
+    switch (type) {
+      case MessageType.success:
+        return Icons.check_circle;
+      case MessageType.error:
+        return Icons.error;
+      case MessageType.warning:
+        return Icons.warning;
+      case MessageType.info:
+        return Icons.info;
+    }
+  }
+}
+```
+
+### 4. Custom Snackbar Widget Template
+```dart
+// custom_snackbar.dart
+import 'package:flutter/material.dart';
+
+class CustomSnackbar extends StatelessWidget {
+  final String message;
+  final MessageType type;
+  final String? actionLabel;
+  final VoidCallback? onAction;
+
+  const CustomSnackbar({
+    Key? key,
+    required this.message,
+    required this.type,
+    this.actionLabel,
+    this.onAction,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: _getBackgroundColor(type),
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Icon(
+            _getIcon(type),
+            color: Colors.white,
+            size: 24,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              message,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          if (actionLabel != null) ...[
+            const SizedBox(width: 12),
+            TextButton(
+              onPressed: onAction,
+              child: Text(
+                actionLabel!,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Color _getBackgroundColor(MessageType type) {
+    switch (type) {
+      case MessageType.success:
+        return Colors.green;
+      case MessageType.error:
+        return Colors.red;
+      case MessageType.warning:
+        return Colors.orange;
+      case MessageType.info:
+        return Colors.blue;
+    }
+  }
+
+  IconData _getIcon(MessageType type) {
+    switch (type) {
+      case MessageType.success:
+        return Icons.check_circle;
+      case MessageType.error:
+        return Icons.error;
+      case MessageType.warning:
+        return Icons.warning;
+      case MessageType.info:
+        return Icons.info;
+    }
+  }
+}
+```
+
+## Code Style Enforcement
+
+### 1. Linting Rules
+- Enable all recommended Flutter lints
+- Add custom rules for project-specific requirements
+- Use dart format for consistent formatting
+- Run dart analyze before commits
+
+### 2. Pre-commit Hooks
+- Format code automatically
+- Run linting checks
+- Run unit tests
+- Check for TODO comments in production code
+
+## Messaging Guidelines
+
+### 1. Message Implementation Rules
+- Always use the centralized MessageService for consistent messaging
+- Include proper localization for all user-facing messages
+- Use appropriate message types (success, error, warning, info)
+- Provide actionable messages with clear next steps
+- Ensure messages are accessible for screen readers and elderly users
+
+### 2. Snackbar Usage Patterns
+```dart
+// Success pattern
+MessageService.showSnackbar(
+  context,
+  context.l10n.operationSuccessful,
+  type: MessageType.success,
+);
+
+// Error with retry pattern
+MessageService.showSnackbar(
+  context,
+  context.l10n.operationFailed,
+  type: MessageType.error,
+  actionLabel: context.l10n.retry,
+  onAction: () => _retryOperation(),
+);
+
+// Warning with navigation pattern
+MessageService.showSnackbar(
+  context,
+  context.l10n.kycRequired,
+  type: MessageType.warning,
+  actionLabel: context.l10n.startKyc,
+  onAction: () => _navigateToKyc(),
+);
+```
+
+### 3. Message Content Guidelines
+- Keep messages concise but informative
+- Use clear, non-technical language
+- Include specific details when helpful (amounts, dates, reference numbers)
+- Avoid jargon and banking terminology that users might not understand
+- Provide context for what went wrong and how to fix it
+
+### 4. Accessibility Requirements
+- All messages must have semantic labels
+- Use high contrast colors for visibility
+- Support voice interaction for message dismissal
+- Ensure messages are readable with large fonts
+- Include audio feedback for critical actions
+
+### 5. Localization Standards
+- All messages must be externalized to .arb files
+- Support English, Sinhala, and Tamil languages
+- Use proper pluralization for different languages
+- Include cultural context in message tone and content
+- Test messages in all supported languages
+
+### 6. Error Message Hierarchy
+1. **Critical**: Security issues, system failures
+2. **High**: Payment failures, transaction errors
+3. **Medium**: Validation errors, warnings
+4. **Low**: Information, tips, general guidance
+
+### 7. Message Testing Requirements
+- Test all message types in different scenarios
+- Verify proper localization in all languages
+- Test accessibility features with screen readers
+- Verify message timing and dismissal behavior
+- Test message queue management with multiple messages
+
+Remember: These rules are designed to ensure code quality, maintainability, and consistency across the project. Always prioritize security and user experience in banking applications. 

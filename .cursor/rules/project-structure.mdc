@@ -1,0 +1,1677 @@
+---
+alwaysApply: true
+---
+
+# Flutter Self-Care Agent - Project Structure
+
+## Overview
+This document outlines the project structure and architecture for the Flutter Self-Care Agent application designed for Temi devices.
+
+## Project Architecture
+
+### Clean Architecture Layers
+```
+lib/
+├── core/                           # Core utilities and shared components
+│   ├── constants/                  # Application constants
+│   │   ├── app_constants.dart     # General app constants
+│   │   ├── api_constants.dart     # API endpoints and keys
+│   │   ├── route_constants.dart   # Route names and paths
+│   │   └── theme_constants.dart   # Theme-related constants
+│   ├── errors/                    # Error handling
+│   │   ├── exceptions.dart        # Custom exceptions
+│   │   ├── failures.dart          # Failure classes
+│   │   └── error_handler.dart     # Global error handler
+│   ├── network/                   # Network layer
+│   │   ├── dio_client.dart        # HTTP client configuration
+│   │   ├── network_info.dart      # Network connectivity checker
+│   │   └── api_interceptors.dart  # Request/response interceptors
+│   ├── utils/                     # Utility functions
+│   │   ├── date_utils.dart        # Date formatting utilities
+│   │   ├── validation_utils.dart  # Input validation
+│   │   ├── encryption_utils.dart  # Encryption helpers
+│   │   └── logger.dart            # Logging utilities
+│   ├── theme/                     # Application theming
+│   │   ├── app_theme.dart         # Main theme configuration
+│   │   ├── app_colors.dart        # Color palette
+│   │   ├── app_text_styles.dart   # Text styles
+│   │   └── app_dimensions.dart    # Spacing and sizing
+│   └── injection/                 # Dependency injection
+│       ├── injection_container.dart
+│       └── injection_container.config.dart
+├── features/                      # Feature modules
+│   ├── authentication/           # User authentication
+│   │   ├── data/
+│   │   │   ├── datasources/
+│   │   │   │   ├── auth_local_datasource.dart
+│   │   │   │   └── auth_remote_datasource.dart
+│   │   │   ├── models/
+│   │   │   │   ├── user_model.dart
+│   │   │   │   └── login_response_model.dart
+│   │   │   └── repositories/
+│   │   │       └── auth_repository_impl.dart
+│   │   ├── domain/
+│   │   │   ├── entities/
+│   │   │   │   └── user_entity.dart
+│   │   │   ├── repositories/
+│   │   │   │   └── auth_repository.dart
+│   │   │   └── usecases/
+│   │   │       ├── login_usecase.dart
+│   │   │       ├── logout_usecase.dart
+│   │   │       └── check_auth_status_usecase.dart
+│   │   └── presentation/
+│   │       ├── bloc/
+│   │       │   ├── auth_bloc.dart
+│   │       │   ├── auth_event.dart
+│   │       │   └── auth_state.dart
+│   │       ├── pages/
+│   │       │   ├── login_page.dart
+│   │       │   └── splash_page.dart
+│   │       └── widgets/
+│   │           ├── login_form.dart
+│   │           └── auth_button.dart
+│   ├── banking/                  # Banking services
+│   │   ├── data/
+│   │   │   ├── datasources/
+│   │   │   │   ├── banking_local_datasource.dart
+│   │   │   │   └── banking_remote_datasource.dart
+│   │   │   ├── models/
+│   │   │   │   ├── account_model.dart
+│   │   │   │   └── transaction_model.dart
+│   │   │   └── repositories/
+│   │   │       └── banking_repository_impl.dart
+│   │   ├── domain/
+│   │   │   ├── entities/
+│   │   │   │   ├── account_entity.dart
+│   │   │   │   └── transaction_entity.dart
+│   │   │   ├── repositories/
+│   │   │   │   └── banking_repository.dart
+│   │   │   └── usecases/
+│   │   │       ├── get_account_balance_usecase.dart
+│   │   │       ├── get_loan_details_usecase.dart
+│   │   │       └── get_transaction_history_usecase.dart
+│   │   └── presentation/
+│   │       ├── bloc/
+│   │       │   ├── banking_bloc.dart
+│   │       │   ├── banking_event.dart
+│   │       │   └── banking_state.dart
+│   │       ├── pages/
+│   │       │   ├── banking_dashboard_page.dart
+│   │       │   ├── account_balance_page.dart
+│   │       │   └── loan_inquiry_page.dart
+│   │       └── widgets/
+│   │           ├── account_card.dart
+│   │           ├── balance_display.dart
+│   │           └── transaction_list.dart
+│   ├── bill_payment/            # Bill payment services
+│   │   ├── data/
+│   │   │   ├── datasources/
+│   │   │   │   ├── bill_payment_local_datasource.dart
+│   │   │   │   └── bill_payment_remote_datasource.dart
+│   │   │   ├── models/
+│   │   │   │   ├── bill_model.dart
+│   │   │   │   └── payment_model.dart
+│   │   │   └── repositories/
+│   │   │       └── bill_payment_repository_impl.dart
+│   │   ├── domain/
+│   │   │   ├── entities/
+│   │   │   │   ├── bill_entity.dart
+│   │   │   │   └── payment_entity.dart
+│   │   │   ├── repositories/
+│   │   │   │   └── bill_payment_repository.dart
+│   │   │   └── usecases/
+│   │   │       ├── pay_mobile_bill_usecase.dart
+│   │   │       ├── pay_utility_bill_usecase.dart
+│   │   │       └── pay_government_bill_usecase.dart
+│   │   └── presentation/
+│   │       ├── bloc/
+│   │       │   ├── bill_payment_bloc.dart
+│   │       │   ├── bill_payment_event.dart
+│   │       │   └── bill_payment_state.dart
+│   │       ├── pages/
+│   │       │   ├── bill_payment_dashboard_page.dart
+│   │       │   ├── mobile_bill_payment_page.dart
+│   │       │   ├── utility_bill_payment_page.dart
+│   │       │   └── government_payment_page.dart
+│   │       └── widgets/
+│   │           ├── bill_payment_form.dart
+│   │           ├── payment_summary.dart
+│   │           └── payment_confirmation.dart
+│   ├── onboarding/              # User onboarding and KYC
+│   │   ├── data/
+│   │   │   ├── datasources/
+│   │   │   │   ├── onboarding_local_datasource.dart
+│   │   │   │   └── onboarding_remote_datasource.dart
+│   │   │   ├── models/
+│   │   │   │   ├── kyc_model.dart
+│   │   │   │   └── onboarding_model.dart
+│   │   │   └── repositories/
+│   │   │       └── onboarding_repository_impl.dart
+│   │   ├── domain/
+│   │   │   ├── entities/
+│   │   │   │   ├── kyc_entity.dart
+│   │   │   │   └── onboarding_entity.dart
+│   │   │   ├── repositories/
+│   │   │   │   └── onboarding_repository.dart
+│   │   │   └── usecases/
+│   │   │       ├── submit_kyc_usecase.dart
+│   │   │       ├── upload_documents_usecase.dart
+│   │   │       └── create_account_usecase.dart
+│   │   └── presentation/
+│   │       ├── bloc/
+│   │       │   ├── onboarding_bloc.dart
+│   │       │   ├── onboarding_event.dart
+│   │       │   └── onboarding_state.dart
+│   │       ├── pages/
+│   │       │   ├── onboarding_flow_page.dart
+│   │       │   ├── kyc_verification_page.dart
+│   │       │   └── account_creation_page.dart
+│   │       └── widgets/
+│   │           ├── document_upload.dart
+│   │           ├── camera_capture.dart
+│   │           └── verification_status.dart
+│   ├── help/                    # Help and assistance
+│   │   ├── data/
+│   │   │   ├── datasources/
+│   │   │   │   ├── help_local_datasource.dart
+│   │   │   │   └── help_remote_datasource.dart
+│   │   │   ├── models/
+│   │   │   │   ├── product_model.dart
+│   │   │   │   └── navigation_model.dart
+│   │   │   └── repositories/
+│   │   │       └── help_repository_impl.dart
+│   │   ├── domain/
+│   │   │   ├── entities/
+│   │   │   │   ├── product_entity.dart
+│   │   │   │   └── navigation_entity.dart
+│   │   │   ├── repositories/
+│   │   │   │   └── help_repository.dart
+│   │   │   └── usecases/
+│   │   │       ├── get_product_catalog_usecase.dart
+│   │   │       └── get_navigation_assistance_usecase.dart
+│   │   └── presentation/
+│   │       ├── bloc/
+│   │       │   ├── help_bloc.dart
+│   │       │   ├── help_event.dart
+│   │       │   └── help_state.dart
+│   │       ├── pages/
+│   │       │   ├── help_dashboard_page.dart
+│   │       │   ├── product_catalog_page.dart
+│   │       │   └── navigation_assistance_page.dart
+│   │       └── widgets/
+│   │           ├── product_card.dart
+│   │           ├── navigation_map.dart
+│   │           └── help_search.dart
+│   └── feedback/                # Feedback collection
+│       ├── data/
+│       │   ├── datasources/
+│       │   │   ├── feedback_local_datasource.dart
+│       │   │   └── feedback_remote_datasource.dart
+│       │   ├── models/
+│       │   │   └── feedback_model.dart
+│       │   └── repositories/
+│       │       └── feedback_repository_impl.dart
+│       ├── domain/
+│       │   ├── entities/
+│       │   │   └── feedback_entity.dart
+│       │   ├── repositories/
+│       │   │   └── feedback_repository.dart
+│       │   └── usecases/
+│       │       ├── submit_feedback_usecase.dart
+│       │       └── get_feedback_categories_usecase.dart
+│       └── presentation/
+│           ├── bloc/
+│           │   ├── feedback_bloc.dart
+│           │   ├── feedback_event.dart
+│           │   └── feedback_state.dart
+│           ├── pages/
+│           │   ├── feedback_page.dart
+│           │   └── feedback_success_page.dart
+│           └── widgets/
+│               ├── feedback_form.dart
+│               ├── rating_widget.dart
+│               └── category_selector.dart
+├── shared/                      # Shared components
+│   ├── widgets/                 # Reusable UI components
+│   │   ├── buttons/
+│   │   │   ├── primary_button.dart
+│   │   │   ├── secondary_button.dart
+│   │   │   └── icon_button.dart
+│   │   ├── forms/
+│   │   │   ├── custom_text_field.dart
+│   │   │   ├── dropdown_field.dart
+│   │   │   └── date_picker_field.dart
+│   │   ├── cards/
+│   │   │   ├── info_card.dart
+│   │   │   ├── action_card.dart
+│   │   │   └── summary_card.dart
+│   │   ├── navigation/
+│   │   │   ├── custom_app_bar.dart
+│   │   │   ├── bottom_navigation.dart
+│   │   │   └── drawer_menu.dart
+│   │   ├── loading/
+│   │   │   ├── loading_indicator.dart
+│   │   │   ├── shimmer_loading.dart
+│   │   │   └── skeleton_loader.dart
+│   │   ├── dialogs/
+│   │   │   ├── confirmation_dialog.dart
+│   │   │   ├── error_dialog.dart
+│   │   │   └── success_dialog.dart
+│   │   ├── messaging/
+│   │   │   ├── custom_snackbar.dart
+│   │   │   ├── message_banner.dart
+│   │   │   ├── toast_message.dart
+│   │   │   └── notification_card.dart
+│   │   └── common/
+│   │       ├── empty_state.dart
+│   │       ├── error_state.dart
+│   │       └── refresh_indicator.dart
+│   ├── models/                  # Shared data models
+│   │   ├── base_model.dart
+│   │   ├── api_response.dart
+│   │   ├── result.dart
+│   │   └── message_model.dart
+│   ├── services/                # Shared services
+│   │   ├── message_service.dart
+│   │   ├── notification_service.dart
+│   │   └── connectivity_service.dart
+│   └── repositories/            # Shared repositories
+│       ├── base_repository.dart
+│       └── storage_repository.dart
+├── l10n/                        # Localization
+│   ├── app_en.arb              # English translations
+│   ├── app_si.arb              # Sinhala translations
+│   ├── app_ta.arb              # Tamil translations
+│   └── generated/               # Generated localization files
+└── main.dart                    # Application entry point
+```
+
+## Key Architectural Decisions
+
+### 1. Clean Architecture
+- **Separation of Concerns**: Each layer has a specific responsibility
+- **Dependency Inversion**: Dependencies point inward toward the domain layer
+- **Testability**: Each layer can be tested independently
+
+### 2. BLoC Pattern
+- **State Management**: Centralized state management using BLoC
+- **Event-Driven**: UI events trigger business logic through events
+- **Reactive**: UI reacts to state changes automatically
+
+### 3. Dependency Injection
+- **Loose Coupling**: Components depend on abstractions, not concretions
+- **Testability**: Easy to mock dependencies for testing
+- **Maintainability**: Easy to swap implementations
+
+### 4. Repository Pattern
+- **Data Abstraction**: Abstract data sources from business logic
+- **Caching Strategy**: Implement caching at the repository level
+- **Error Handling**: Centralized error handling for data operations
+
+## File Naming Conventions
+
+### Dart Files
+- **snake_case**: All file names use snake_case
+- **Descriptive**: File names clearly indicate their purpose
+- **Consistent**: Follow established patterns across the project
+
+### Examples
+```
+// Good
+user_profile_page.dart
+banking_repository_impl.dart
+bill_payment_bloc.dart
+
+// Bad
+UserProfilePage.dart
+BankingRepoImpl.dart
+billPaymentBloc.dart
+```
+
+## Code Organization Rules
+
+### 1. Import Organization
+```dart
+// Dart libraries
+import 'dart:async';
+import 'dart:convert';
+
+// Flutter libraries
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+// Third-party packages
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:dio/dio.dart';
+
+// Local imports
+import '../../../core/errors/failures.dart';
+import '../domain/entities/user_entity.dart';
+```
+
+### 2. Class Structure
+```dart
+class ExampleClass {
+  // Constants
+  static const String EXAMPLE_CONSTANT = 'example';
+  
+  // Static variables
+  static int _instanceCount = 0;
+  
+  // Instance variables
+  final String _privateField;
+  String publicField;
+  
+  // Constructors
+  ExampleClass(this._privateField, {required this.publicField});
+  
+  // Named constructors
+  ExampleClass.fromJson(Map<String, dynamic> json);
+  
+  // Getters
+  String get privateField => _privateField;
+  
+  // Setters
+  set publicField(String value) => publicField = value;
+  
+  // Public methods
+  void publicMethod() {}
+  
+  // Private methods
+  void _privateMethod() {}
+  
+  // Overridden methods
+  @override
+  String toString() => 'ExampleClass($_privateField)';
+}
+```
+
+### 3. Widget Structure
+```dart
+class ExampleWidget extends StatelessWidget {
+  // Constructor parameters
+  final String title;
+  final VoidCallback? onTap;
+  
+  // Constructor
+  const ExampleWidget({
+    Key? key,
+    required this.title,
+    this.onTap,
+  }) : super(key: key);
+  
+  // Build method
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      // Widget implementation
+    );
+  }
+  
+  // Private helper methods
+  Widget _buildTitle() {
+    return Text(title);
+  }
+}
+```
+
+## Testing Structure
+
+### Directory Structure
+```
+test/
+├── unit/                        # Unit tests
+│   ├── core/
+│   ├── features/
+│   └── shared/
+├── widget/                      # Widget tests
+│   ├── features/
+│   └── shared/
+├── integration/                 # Integration tests
+│   ├── features/
+│   └── flows/
+└── fixtures/                    # Test data
+    ├── json/
+    └── images/
+```
+
+### Test Naming
+- **Unit Tests**: `{class_name}_test.dart`
+- **Widget Tests**: `{widget_name}_test.dart`
+- **Integration Tests**: `{feature_name}_integration_test.dart`
+
+## Firebase Structure
+
+### Firestore Collections
+```
+users/
+├── {userId}/
+│   ├── profile/
+│   ├── accounts/
+│   ├── transactions/
+│   └── kyc_documents/
+
+bills/
+├── mobile/
+├── utility/
+└── government/
+
+feedback/
+├── {feedbackId}/
+│   ├── category
+│   ├── rating
+│   ├── comment
+│   └── timestamp
+
+products/
+├── {productId}/
+│   ├── name
+│   ├── description
+│   ├── category
+│   └── features
+```
+
+### Storage Structure
+```
+storage/
+├── kyc_documents/
+│   ├── {userId}/
+│   │   ├── id_front.jpg
+│   │   ├── id_back.jpg
+│   │   └── selfie.jpg
+├── profile_images/
+│   └── {userId}/
+│       └── profile.jpg
+└── app_assets/
+    ├── product_images/
+    └── help_images/
+```
+
+## Environment Configuration
+
+### Development
+- Firebase project: `selfcareagent-dev`
+- API base URL: `https://api-dev.selfcareagent.com`
+- Debug mode: `true`
+
+### Staging
+- Firebase project: `selfcareagent-staging`
+- API base URL: `https://api-staging.selfcareagent.com`
+- Debug mode: `false`
+
+### Production
+- Firebase project: `selfcareagent-prod`
+- API base URL: `https://api.selfcareagent.com`
+- Debug mode: `false`
+
+## Security Considerations
+
+### Data Protection
+- Encrypt sensitive data before storage
+- Use secure storage for tokens and credentials
+- Implement proper session management
+- Validate all user inputs
+
+### API Security
+- Use HTTPS for all communications
+- Implement proper authentication headers
+- Use Firebase Security Rules effectively
+- Implement rate limiting
+
+### Banking Compliance
+- Follow PCI DSS guidelines
+- Implement proper audit trails
+- Ensure data privacy compliance
+- Regular security audits
+
+## Performance Guidelines
+
+### Image Optimization
+- Use WebP format when possible
+- Implement lazy loading
+- Cache images appropriately
+- Optimize for different screen densities
+
+### State Management
+- Dispose BLoCs properly
+- Avoid unnecessary rebuilds
+- Use const constructors
+- Implement proper stream management
+
+### Network Optimization
+- Implement caching strategies
+- Use connection state monitoring
+- Handle offline scenarios
+- Optimize Firebase queries
+
+## Messaging & Notification System
+
+### Message Types and Usage
+
+#### 1. Snackbar Messages
+Used for temporary feedback and notifications:
+
+```dart
+// Success messages
+MessageService.showSnackbar(
+  context,
+  'Payment completed successfully',
+  type: MessageType.success,
+);
+
+// Error messages
+MessageService.showSnackbar(
+  context,
+  'Payment failed. Please try again.',
+  type: MessageType.error,
+  actionLabel: 'Retry',
+  onAction: () => _retryPayment(),
+);
+
+// Warning messages
+MessageService.showSnackbar(
+  context,
+  'Low balance detected',
+  type: MessageType.warning,
+  duration: Duration(seconds: 5),
+);
+
+// Info messages
+MessageService.showSnackbar(
+  context,
+  'Please complete KYC verification',
+  type: MessageType.info,
+  actionLabel: 'Start KYC',
+  onAction: () => _navigateToKYC(),
+);
+```
+
+#### 2. Dialog Messages
+Used for critical actions requiring user confirmation:
+
+```dart
+// Confirmation dialogs
+showDialog(
+  context: context,
+  builder: (context) => ConfirmationDialog(
+    title: 'Confirm Payment',
+    message: 'Are you sure you want to pay Rs. 1,500 for electricity bill?',
+    onConfirm: () => _processPayment(),
+  ),
+);
+
+// Error dialogs
+showDialog(
+  context: context,
+  builder: (context) => ErrorDialog(
+    title: 'Payment Failed',
+    message: 'Your payment could not be processed. Please check your account balance and try again.',
+    onRetry: () => _retryPayment(),
+  ),
+);
+```
+
+#### 3. Banner Messages
+Used for persistent notifications:
+
+```dart
+// System maintenance banner
+MessageBanner(
+  message: 'Scheduled maintenance from 2:00 AM to 4:00 AM',
+  type: MessageType.warning,
+  isDismissible: true,
+  action: BannerAction(
+    label: 'Learn More',
+    onPressed: () => _showMaintenanceDetails(),
+  ),
+)
+```
+
+### Message Categories by Feature
+
+#### Banking Messages
+```dart
+// Account balance messages
+'Account balance retrieved successfully'
+'Unable to fetch account balance. Please try again.'
+'Your account balance is low. Consider making a deposit.'
+
+// Transaction messages
+'Transaction completed successfully'
+'Transaction failed. Please contact customer support.'
+'Transaction is being processed. You will receive a confirmation shortly.'
+
+// Loan inquiry messages
+'Loan details retrieved successfully'
+'No active loans found for your account'
+'Loan application submitted successfully'
+```
+
+#### Bill Payment Messages
+```dart
+// Payment success messages
+'Mobile bill payment of Rs. {amount} completed successfully'
+'Utility bill payment scheduled for {date}'
+'Government payment processed successfully'
+
+// Payment error messages
+'Payment failed. Insufficient balance.'
+'Payment gateway is temporarily unavailable'
+'Invalid bill reference number. Please check and try again.'
+
+// Payment warnings
+'This bill was already paid on {date}'
+'Payment amount exceeds your daily limit'
+'Bill due date has passed. Late fees may apply.'
+```
+
+#### KYC/Onboarding Messages
+```dart
+// Document upload messages
+'Document uploaded successfully'
+'Document upload failed. Please try again.'
+'Document format not supported. Please upload JPG or PNG files.'
+
+// Verification messages
+'KYC verification completed successfully'
+'KYC verification is in progress. You will be notified once completed.'
+'KYC verification failed. Please resubmit your documents.'
+
+// Account creation messages
+'Account created successfully. Welcome to our banking services!'
+'Account creation failed. Please contact customer support.'
+'Please complete KYC verification to activate your account.'
+```
+
+### Message Localization Structure
+
+#### English (en)
+```json
+{
+  "messages": {
+    "success": {
+      "payment_completed": "Payment completed successfully",
+      "document_uploaded": "Document uploaded successfully",
+      "account_created": "Account created successfully"
+    },
+    "error": {
+      "payment_failed": "Payment failed. Please try again.",
+      "network_error": "Network connection failed. Please check your internet connection.",
+      "invalid_credentials": "Invalid login credentials. Please try again."
+    },
+    "warning": {
+      "low_balance": "Your account balance is low",
+      "session_expiring": "Your session will expire in {minutes} minutes",
+      "maintenance_mode": "System maintenance in progress"
+    },
+    "info": {
+      "kyc_required": "Please complete KYC verification",
+      "processing": "Your request is being processed",
+      "update_available": "A new version of the app is available"
+    }
+  }
+}
+```
+
+#### Sinhala (si)
+```json
+{
+  "messages": {
+    "success": {
+      "payment_completed": "ගෙවීම සාර්ථකව සම්පූර්ණ කරන ලදී",
+      "document_uploaded": "ලේඛනය සාර්ථකව උඩුගත කරන ලදී",
+      "account_created": "ගිණුම සාර්ථකව නිර්මාණය කරන ලදී"
+    },
+    "error": {
+      "payment_failed": "ගෙවීම අසාර්ථක විය. කරුණාකර නැවත උත්සාහ කරන්න.",
+      "network_error": "ජාල සම්බන්ධතාවය අසාර්ථක විය. කරුණාකර ඔබේ අන්තර්ජාල සම්බන්ධතාවය පරීක්ෂා කරන්න.",
+      "invalid_credentials": "අවලංගු පිවිසුම් තොරතුරු. කරුණාකර නැවත උත්සාහ කරන්න."
+    }
+  }
+}
+```
+
+#### Tamil (ta)
+```json
+{
+  "messages": {
+    "success": {
+      "payment_completed": "பணம் செலுத்துதல் வெற்றிகரமாக முடிந்தது",
+      "document_uploaded": "ஆவணம் வெற்றிகரமாக பதிவேற்றப்பட்டது",
+      "account_created": "கணக்கு வெற்றிகரமாக உருவாக்கப்பட்டது"
+    },
+    "error": {
+      "payment_failed": "பணம் செலுத்துதல் தோல்வியடைந்தது. தயவுசெய்து மீண்டும் முயற்சிக்கவும்.",
+      "network_error": "நெட்வொர்க் இணைப்பு தோல்வியடைந்தது. தயவுசெய்து உங்கள் இணைய இணைப்பை சரிபார்க்கவும்.",
+      "invalid_credentials": "தவறான உள்நுழைவு விவரங்கள். தயவுசெய்து மீண்டும் முயற்சிக்கவும்."
+    }
+  }
+}
+```
+
+### Message Timing Guidelines
+
+#### Snackbar Duration
+- **Success messages**: 3 seconds
+- **Error messages**: 5 seconds (with action button)
+- **Warning messages**: 5 seconds
+- **Info messages**: 4 seconds
+
+#### Dialog Persistence
+- **Confirmation dialogs**: Until user action
+- **Error dialogs**: Until user dismisses
+- **Success dialogs**: Auto-dismiss after 3 seconds (optional)
+
+#### Banner Messages
+- **System notifications**: Until dismissed or resolved
+- **Feature announcements**: 24 hours or until dismissed
+- **Maintenance alerts**: Until maintenance is complete
+
+### Accessibility Features
+
+#### Screen Reader Support
+- All messages include proper semantic labels
+- Message type is announced along with content
+- Action buttons have descriptive labels
+
+#### Visual Accessibility
+- High contrast colors for different message types
+- Large fonts suitable for elderly users on Temi devices
+- Clear icons that are easily recognizable
+
+#### Voice Interaction
+- Messages can be read aloud using text-to-speech
+- Voice commands can dismiss or act on messages
+- Audio feedback for critical actions
+
+### Error Handling in Messages
+
+#### Network Errors
+```dart
+try {
+  await apiCall();
+  MessageService.showSnackbar(
+    context,
+    context.l10n.paymentCompleted,
+    type: MessageType.success,
+  );
+} on NetworkException {
+  MessageService.showSnackbar(
+    context,
+    context.l10n.networkError,
+    type: MessageType.error,
+    actionLabel: context.l10n.retry,
+    onAction: () => _retryOperation(),
+  );
+} on ValidationException catch (e) {
+  MessageService.showSnackbar(
+    context,
+    e.message,
+    type: MessageType.warning,
+  );
+}
+```
+
+#### Validation Errors
+```dart
+if (!isValidAmount(amount)) {
+  MessageService.showSnackbar(
+    context,
+    context.l10n.invalidAmount,
+    type: MessageType.error,
+  );
+  return;
+}
+```
+
+### Message Queue Management
+
+#### Priority System
+1. **Critical**: Security alerts, system failures
+2. **High**: Payment confirmations, transaction errors
+3. **Medium**: Feature notifications, warnings
+4. **Low**: General information, tips
+
+#### Queue Handling
+- Only one snackbar visible at a time
+- Higher priority messages replace lower priority ones
+- Messages are queued and displayed in order
+- Duplicate messages are filtered out
+
+This comprehensive messaging system ensures consistent, accessible, and user-friendly communication throughout the banking application, specifically optimized for Temi devices and elderly users. # Flutter Self-Care Agent - Project Structure
+
+## Overview
+This document outlines the project structure and architecture for the Flutter Self-Care Agent application designed for Temi devices.
+
+## Project Architecture
+
+### Clean Architecture Layers
+```
+lib/
+├── core/                           # Core utilities and shared components
+│   ├── constants/                  # Application constants
+│   │   ├── app_constants.dart     # General app constants
+│   │   ├── api_constants.dart     # API endpoints and keys
+│   │   ├── route_constants.dart   # Route names and paths
+│   │   └── theme_constants.dart   # Theme-related constants
+│   ├── errors/                    # Error handling
+│   │   ├── exceptions.dart        # Custom exceptions
+│   │   ├── failures.dart          # Failure classes
+│   │   └── error_handler.dart     # Global error handler
+│   ├── network/                   # Network layer
+│   │   ├── dio_client.dart        # HTTP client configuration
+│   │   ├── network_info.dart      # Network connectivity checker
+│   │   └── api_interceptors.dart  # Request/response interceptors
+│   ├── utils/                     # Utility functions
+│   │   ├── date_utils.dart        # Date formatting utilities
+│   │   ├── validation_utils.dart  # Input validation
+│   │   ├── encryption_utils.dart  # Encryption helpers
+│   │   └── logger.dart            # Logging utilities
+│   ├── theme/                     # Application theming
+│   │   ├── app_theme.dart         # Main theme configuration
+│   │   ├── app_colors.dart        # Color palette
+│   │   ├── app_text_styles.dart   # Text styles
+│   │   └── app_dimensions.dart    # Spacing and sizing
+│   └── injection/                 # Dependency injection
+│       ├── injection_container.dart
+│       └── injection_container.config.dart
+├── features/                      # Feature modules
+│   ├── authentication/           # User authentication
+│   │   ├── data/
+│   │   │   ├── datasources/
+│   │   │   │   ├── auth_local_datasource.dart
+│   │   │   │   └── auth_remote_datasource.dart
+│   │   │   ├── models/
+│   │   │   │   ├── user_model.dart
+│   │   │   │   └── login_response_model.dart
+│   │   │   └── repositories/
+│   │   │       └── auth_repository_impl.dart
+│   │   ├── domain/
+│   │   │   ├── entities/
+│   │   │   │   └── user_entity.dart
+│   │   │   ├── repositories/
+│   │   │   │   └── auth_repository.dart
+│   │   │   └── usecases/
+│   │   │       ├── login_usecase.dart
+│   │   │       ├── logout_usecase.dart
+│   │   │       └── check_auth_status_usecase.dart
+│   │   └── presentation/
+│   │       ├── bloc/
+│   │       │   ├── auth_bloc.dart
+│   │       │   ├── auth_event.dart
+│   │       │   └── auth_state.dart
+│   │       ├── pages/
+│   │       │   ├── login_page.dart
+│   │       │   └── splash_page.dart
+│   │       └── widgets/
+│   │           ├── login_form.dart
+│   │           └── auth_button.dart
+│   ├── banking/                  # Banking services
+│   │   ├── data/
+│   │   │   ├── datasources/
+│   │   │   │   ├── banking_local_datasource.dart
+│   │   │   │   └── banking_remote_datasource.dart
+│   │   │   ├── models/
+│   │   │   │   ├── account_model.dart
+│   │   │   │   └── transaction_model.dart
+│   │   │   └── repositories/
+│   │   │       └── banking_repository_impl.dart
+│   │   ├── domain/
+│   │   │   ├── entities/
+│   │   │   │   ├── account_entity.dart
+│   │   │   │   └── transaction_entity.dart
+│   │   │   ├── repositories/
+│   │   │   │   └── banking_repository.dart
+│   │   │   └── usecases/
+│   │   │       ├── get_account_balance_usecase.dart
+│   │   │       ├── get_loan_details_usecase.dart
+│   │   │       └── get_transaction_history_usecase.dart
+│   │   └── presentation/
+│   │       ├── bloc/
+│   │       │   ├── banking_bloc.dart
+│   │       │   ├── banking_event.dart
+│   │       │   └── banking_state.dart
+│   │       ├── pages/
+│   │       │   ├── banking_dashboard_page.dart
+│   │       │   ├── account_balance_page.dart
+│   │       │   └── loan_inquiry_page.dart
+│   │       └── widgets/
+│   │           ├── account_card.dart
+│   │           ├── balance_display.dart
+│   │           └── transaction_list.dart
+│   ├── bill_payment/            # Bill payment services
+│   │   ├── data/
+│   │   │   ├── datasources/
+│   │   │   │   ├── bill_payment_local_datasource.dart
+│   │   │   │   └── bill_payment_remote_datasource.dart
+│   │   │   ├── models/
+│   │   │   │   ├── bill_model.dart
+│   │   │   │   └── payment_model.dart
+│   │   │   └── repositories/
+│   │   │       └── bill_payment_repository_impl.dart
+│   │   ├── domain/
+│   │   │   ├── entities/
+│   │   │   │   ├── bill_entity.dart
+│   │   │   │   └── payment_entity.dart
+│   │   │   ├── repositories/
+│   │   │   │   └── bill_payment_repository.dart
+│   │   │   └── usecases/
+│   │   │       ├── pay_mobile_bill_usecase.dart
+│   │   │       ├── pay_utility_bill_usecase.dart
+│   │   │       └── pay_government_bill_usecase.dart
+│   │   └── presentation/
+│   │       ├── bloc/
+│   │       │   ├── bill_payment_bloc.dart
+│   │       │   ├── bill_payment_event.dart
+│   │       │   └── bill_payment_state.dart
+│   │       ├── pages/
+│   │       │   ├── bill_payment_dashboard_page.dart
+│   │       │   ├── mobile_bill_payment_page.dart
+│   │       │   ├── utility_bill_payment_page.dart
+│   │       │   └── government_payment_page.dart
+│   │       └── widgets/
+│   │           ├── bill_payment_form.dart
+│   │           ├── payment_summary.dart
+│   │           └── payment_confirmation.dart
+│   ├── onboarding/              # User onboarding and KYC
+│   │   ├── data/
+│   │   │   ├── datasources/
+│   │   │   │   ├── onboarding_local_datasource.dart
+│   │   │   │   └── onboarding_remote_datasource.dart
+│   │   │   ├── models/
+│   │   │   │   ├── kyc_model.dart
+│   │   │   │   └── onboarding_model.dart
+│   │   │   └── repositories/
+│   │   │       └── onboarding_repository_impl.dart
+│   │   ├── domain/
+│   │   │   ├── entities/
+│   │   │   │   ├── kyc_entity.dart
+│   │   │   │   └── onboarding_entity.dart
+│   │   │   ├── repositories/
+│   │   │   │   └── onboarding_repository.dart
+│   │   │   └── usecases/
+│   │   │       ├── submit_kyc_usecase.dart
+│   │   │       ├── upload_documents_usecase.dart
+│   │   │       └── create_account_usecase.dart
+│   │   └── presentation/
+│   │       ├── bloc/
+│   │       │   ├── onboarding_bloc.dart
+│   │       │   ├── onboarding_event.dart
+│   │       │   └── onboarding_state.dart
+│   │       ├── pages/
+│   │       │   ├── onboarding_flow_page.dart
+│   │       │   ├── kyc_verification_page.dart
+│   │       │   └── account_creation_page.dart
+│   │       └── widgets/
+│   │           ├── document_upload.dart
+│   │           ├── camera_capture.dart
+│   │           └── verification_status.dart
+│   ├── help/                    # Help and assistance
+│   │   ├── data/
+│   │   │   ├── datasources/
+│   │   │   │   ├── help_local_datasource.dart
+│   │   │   │   └── help_remote_datasource.dart
+│   │   │   ├── models/
+│   │   │   │   ├── product_model.dart
+│   │   │   │   └── navigation_model.dart
+│   │   │   └── repositories/
+│   │   │       └── help_repository_impl.dart
+│   │   ├── domain/
+│   │   │   ├── entities/
+│   │   │   │   ├── product_entity.dart
+│   │   │   │   └── navigation_entity.dart
+│   │   │   ├── repositories/
+│   │   │   │   └── help_repository.dart
+│   │   │   └── usecases/
+│   │   │       ├── get_product_catalog_usecase.dart
+│   │   │       └── get_navigation_assistance_usecase.dart
+│   │   └── presentation/
+│   │       ├── bloc/
+│   │       │   ├── help_bloc.dart
+│   │       │   ├── help_event.dart
+│   │       │   └── help_state.dart
+│   │       ├── pages/
+│   │       │   ├── help_dashboard_page.dart
+│   │       │   ├── product_catalog_page.dart
+│   │       │   └── navigation_assistance_page.dart
+│   │       └── widgets/
+│   │           ├── product_card.dart
+│   │           ├── navigation_map.dart
+│   │           └── help_search.dart
+│   └── feedback/                # Feedback collection
+│       ├── data/
+│       │   ├── datasources/
+│       │   │   ├── feedback_local_datasource.dart
+│       │   │   └── feedback_remote_datasource.dart
+│       │   ├── models/
+│       │   │   └── feedback_model.dart
+│       │   └── repositories/
+│       │       └── feedback_repository_impl.dart
+│       ├── domain/
+│       │   ├── entities/
+│       │   │   └── feedback_entity.dart
+│       │   ├── repositories/
+│       │   │   └── feedback_repository.dart
+│       │   └── usecases/
+│       │       ├── submit_feedback_usecase.dart
+│       │       └── get_feedback_categories_usecase.dart
+│       └── presentation/
+│           ├── bloc/
+│           │   ├── feedback_bloc.dart
+│           │   ├── feedback_event.dart
+│           │   └── feedback_state.dart
+│           ├── pages/
+│           │   ├── feedback_page.dart
+│           │   └── feedback_success_page.dart
+│           └── widgets/
+│               ├── feedback_form.dart
+│               ├── rating_widget.dart
+│               └── category_selector.dart
+├── shared/                      # Shared components
+│   ├── widgets/                 # Reusable UI components
+│   │   ├── buttons/
+│   │   │   ├── primary_button.dart
+│   │   │   ├── secondary_button.dart
+│   │   │   └── icon_button.dart
+│   │   ├── forms/
+│   │   │   ├── custom_text_field.dart
+│   │   │   ├── dropdown_field.dart
+│   │   │   └── date_picker_field.dart
+│   │   ├── cards/
+│   │   │   ├── info_card.dart
+│   │   │   ├── action_card.dart
+│   │   │   └── summary_card.dart
+│   │   ├── navigation/
+│   │   │   ├── custom_app_bar.dart
+│   │   │   ├── bottom_navigation.dart
+│   │   │   └── drawer_menu.dart
+│   │   ├── loading/
+│   │   │   ├── loading_indicator.dart
+│   │   │   ├── shimmer_loading.dart
+│   │   │   └── skeleton_loader.dart
+│   │   ├── dialogs/
+│   │   │   ├── confirmation_dialog.dart
+│   │   │   ├── error_dialog.dart
+│   │   │   └── success_dialog.dart
+│   │   ├── messaging/
+│   │   │   ├── custom_snackbar.dart
+│   │   │   ├── message_banner.dart
+│   │   │   ├── toast_message.dart
+│   │   │   └── notification_card.dart
+│   │   └── common/
+│   │       ├── empty_state.dart
+│   │       ├── error_state.dart
+│   │       └── refresh_indicator.dart
+│   ├── models/                  # Shared data models
+│   │   ├── base_model.dart
+│   │   ├── api_response.dart
+│   │   ├── result.dart
+│   │   └── message_model.dart
+│   ├── services/                # Shared services
+│   │   ├── message_service.dart
+│   │   ├── notification_service.dart
+│   │   └── connectivity_service.dart
+│   └── repositories/            # Shared repositories
+│       ├── base_repository.dart
+│       └── storage_repository.dart
+├── l10n/                        # Localization
+│   ├── app_en.arb              # English translations
+│   ├── app_si.arb              # Sinhala translations
+│   ├── app_ta.arb              # Tamil translations
+│   └── generated/               # Generated localization files
+└── main.dart                    # Application entry point
+```
+
+## Key Architectural Decisions
+
+### 1. Clean Architecture
+- **Separation of Concerns**: Each layer has a specific responsibility
+- **Dependency Inversion**: Dependencies point inward toward the domain layer
+- **Testability**: Each layer can be tested independently
+
+### 2. BLoC Pattern
+- **State Management**: Centralized state management using BLoC
+- **Event-Driven**: UI events trigger business logic through events
+- **Reactive**: UI reacts to state changes automatically
+
+### 3. Dependency Injection
+- **Loose Coupling**: Components depend on abstractions, not concretions
+- **Testability**: Easy to mock dependencies for testing
+- **Maintainability**: Easy to swap implementations
+
+### 4. Repository Pattern
+- **Data Abstraction**: Abstract data sources from business logic
+- **Caching Strategy**: Implement caching at the repository level
+- **Error Handling**: Centralized error handling for data operations
+
+## File Naming Conventions
+
+### Dart Files
+- **snake_case**: All file names use snake_case
+- **Descriptive**: File names clearly indicate their purpose
+- **Consistent**: Follow established patterns across the project
+
+### Examples
+```
+// Good
+user_profile_page.dart
+banking_repository_impl.dart
+bill_payment_bloc.dart
+
+// Bad
+UserProfilePage.dart
+BankingRepoImpl.dart
+billPaymentBloc.dart
+```
+
+## Code Organization Rules
+
+### 1. Import Organization
+```dart
+// Dart libraries
+import 'dart:async';
+import 'dart:convert';
+
+// Flutter libraries
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+// Third-party packages
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:dio/dio.dart';
+
+// Local imports
+import '../../../core/errors/failures.dart';
+import '../domain/entities/user_entity.dart';
+```
+
+### 2. Class Structure
+```dart
+class ExampleClass {
+  // Constants
+  static const String EXAMPLE_CONSTANT = 'example';
+  
+  // Static variables
+  static int _instanceCount = 0;
+  
+  // Instance variables
+  final String _privateField;
+  String publicField;
+  
+  // Constructors
+  ExampleClass(this._privateField, {required this.publicField});
+  
+  // Named constructors
+  ExampleClass.fromJson(Map<String, dynamic> json);
+  
+  // Getters
+  String get privateField => _privateField;
+  
+  // Setters
+  set publicField(String value) => publicField = value;
+  
+  // Public methods
+  void publicMethod() {}
+  
+  // Private methods
+  void _privateMethod() {}
+  
+  // Overridden methods
+  @override
+  String toString() => 'ExampleClass($_privateField)';
+}
+```
+
+### 3. Widget Structure
+```dart
+class ExampleWidget extends StatelessWidget {
+  // Constructor parameters
+  final String title;
+  final VoidCallback? onTap;
+  
+  // Constructor
+  const ExampleWidget({
+    Key? key,
+    required this.title,
+    this.onTap,
+  }) : super(key: key);
+  
+  // Build method
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      // Widget implementation
+    );
+  }
+  
+  // Private helper methods
+  Widget _buildTitle() {
+    return Text(title);
+  }
+}
+```
+
+## Testing Structure
+
+### Directory Structure
+```
+test/
+├── unit/                        # Unit tests
+│   ├── core/
+│   ├── features/
+│   └── shared/
+├── widget/                      # Widget tests
+│   ├── features/
+│   └── shared/
+├── integration/                 # Integration tests
+│   ├── features/
+│   └── flows/
+└── fixtures/                    # Test data
+    ├── json/
+    └── images/
+```
+
+### Test Naming
+- **Unit Tests**: `{class_name}_test.dart`
+- **Widget Tests**: `{widget_name}_test.dart`
+- **Integration Tests**: `{feature_name}_integration_test.dart`
+
+## Firebase Structure
+
+### Firestore Collections
+```
+users/
+├── {userId}/
+│   ├── profile/
+│   ├── accounts/
+│   ├── transactions/
+│   └── kyc_documents/
+
+bills/
+├── mobile/
+├── utility/
+└── government/
+
+feedback/
+├── {feedbackId}/
+│   ├── category
+│   ├── rating
+│   ├── comment
+│   └── timestamp
+
+products/
+├── {productId}/
+│   ├── name
+│   ├── description
+│   ├── category
+│   └── features
+```
+
+### Storage Structure
+```
+storage/
+├── kyc_documents/
+│   ├── {userId}/
+│   │   ├── id_front.jpg
+│   │   ├── id_back.jpg
+│   │   └── selfie.jpg
+├── profile_images/
+│   └── {userId}/
+│       └── profile.jpg
+└── app_assets/
+    ├── product_images/
+    └── help_images/
+```
+
+## Environment Configuration
+
+### Development
+- Firebase project: `selfcareagent-dev`
+- API base URL: `https://api-dev.selfcareagent.com`
+- Debug mode: `true`
+
+### Staging
+- Firebase project: `selfcareagent-staging`
+- API base URL: `https://api-staging.selfcareagent.com`
+- Debug mode: `false`
+
+### Production
+- Firebase project: `selfcareagent-prod`
+- API base URL: `https://api.selfcareagent.com`
+- Debug mode: `false`
+
+## Security Considerations
+
+### Data Protection
+- Encrypt sensitive data before storage
+- Use secure storage for tokens and credentials
+- Implement proper session management
+- Validate all user inputs
+
+### API Security
+- Use HTTPS for all communications
+- Implement proper authentication headers
+- Use Firebase Security Rules effectively
+- Implement rate limiting
+
+### Banking Compliance
+- Follow PCI DSS guidelines
+- Implement proper audit trails
+- Ensure data privacy compliance
+- Regular security audits
+
+## Performance Guidelines
+
+### Image Optimization
+- Use WebP format when possible
+- Implement lazy loading
+- Cache images appropriately
+- Optimize for different screen densities
+
+### State Management
+- Dispose BLoCs properly
+- Avoid unnecessary rebuilds
+- Use const constructors
+- Implement proper stream management
+
+### Network Optimization
+- Implement caching strategies
+- Use connection state monitoring
+- Handle offline scenarios
+- Optimize Firebase queries
+
+## Messaging & Notification System
+
+### Message Types and Usage
+
+#### 1. Snackbar Messages
+Used for temporary feedback and notifications:
+
+```dart
+// Success messages
+MessageService.showSnackbar(
+  context,
+  'Payment completed successfully',
+  type: MessageType.success,
+);
+
+// Error messages
+MessageService.showSnackbar(
+  context,
+  'Payment failed. Please try again.',
+  type: MessageType.error,
+  actionLabel: 'Retry',
+  onAction: () => _retryPayment(),
+);
+
+// Warning messages
+MessageService.showSnackbar(
+  context,
+  'Low balance detected',
+  type: MessageType.warning,
+  duration: Duration(seconds: 5),
+);
+
+// Info messages
+MessageService.showSnackbar(
+  context,
+  'Please complete KYC verification',
+  type: MessageType.info,
+  actionLabel: 'Start KYC',
+  onAction: () => _navigateToKYC(),
+);
+```
+
+#### 2. Dialog Messages
+Used for critical actions requiring user confirmation:
+
+```dart
+// Confirmation dialogs
+showDialog(
+  context: context,
+  builder: (context) => ConfirmationDialog(
+    title: 'Confirm Payment',
+    message: 'Are you sure you want to pay Rs. 1,500 for electricity bill?',
+    onConfirm: () => _processPayment(),
+  ),
+);
+
+// Error dialogs
+showDialog(
+  context: context,
+  builder: (context) => ErrorDialog(
+    title: 'Payment Failed',
+    message: 'Your payment could not be processed. Please check your account balance and try again.',
+    onRetry: () => _retryPayment(),
+  ),
+);
+```
+
+#### 3. Banner Messages
+Used for persistent notifications:
+
+```dart
+// System maintenance banner
+MessageBanner(
+  message: 'Scheduled maintenance from 2:00 AM to 4:00 AM',
+  type: MessageType.warning,
+  isDismissible: true,
+  action: BannerAction(
+    label: 'Learn More',
+    onPressed: () => _showMaintenanceDetails(),
+  ),
+)
+```
+
+### Message Categories by Feature
+
+#### Banking Messages
+```dart
+// Account balance messages
+'Account balance retrieved successfully'
+'Unable to fetch account balance. Please try again.'
+'Your account balance is low. Consider making a deposit.'
+
+// Transaction messages
+'Transaction completed successfully'
+'Transaction failed. Please contact customer support.'
+'Transaction is being processed. You will receive a confirmation shortly.'
+
+// Loan inquiry messages
+'Loan details retrieved successfully'
+'No active loans found for your account'
+'Loan application submitted successfully'
+```
+
+#### Bill Payment Messages
+```dart
+// Payment success messages
+'Mobile bill payment of Rs. {amount} completed successfully'
+'Utility bill payment scheduled for {date}'
+'Government payment processed successfully'
+
+// Payment error messages
+'Payment failed. Insufficient balance.'
+'Payment gateway is temporarily unavailable'
+'Invalid bill reference number. Please check and try again.'
+
+// Payment warnings
+'This bill was already paid on {date}'
+'Payment amount exceeds your daily limit'
+'Bill due date has passed. Late fees may apply.'
+```
+
+#### KYC/Onboarding Messages
+```dart
+// Document upload messages
+'Document uploaded successfully'
+'Document upload failed. Please try again.'
+'Document format not supported. Please upload JPG or PNG files.'
+
+// Verification messages
+'KYC verification completed successfully'
+'KYC verification is in progress. You will be notified once completed.'
+'KYC verification failed. Please resubmit your documents.'
+
+// Account creation messages
+'Account created successfully. Welcome to our banking services!'
+'Account creation failed. Please contact customer support.'
+'Please complete KYC verification to activate your account.'
+```
+
+### Message Localization Structure
+
+#### English (en)
+```json
+{
+  "messages": {
+    "success": {
+      "payment_completed": "Payment completed successfully",
+      "document_uploaded": "Document uploaded successfully",
+      "account_created": "Account created successfully"
+    },
+    "error": {
+      "payment_failed": "Payment failed. Please try again.",
+      "network_error": "Network connection failed. Please check your internet connection.",
+      "invalid_credentials": "Invalid login credentials. Please try again."
+    },
+    "warning": {
+      "low_balance": "Your account balance is low",
+      "session_expiring": "Your session will expire in {minutes} minutes",
+      "maintenance_mode": "System maintenance in progress"
+    },
+    "info": {
+      "kyc_required": "Please complete KYC verification",
+      "processing": "Your request is being processed",
+      "update_available": "A new version of the app is available"
+    }
+  }
+}
+```
+
+#### Sinhala (si)
+```json
+{
+  "messages": {
+    "success": {
+      "payment_completed": "ගෙවීම සාර්ථකව සම්පූර්ණ කරන ලදී",
+      "document_uploaded": "ලේඛනය සාර්ථකව උඩුගත කරන ලදී",
+      "account_created": "ගිණුම සාර්ථකව නිර්මාණය කරන ලදී"
+    },
+    "error": {
+      "payment_failed": "ගෙවීම අසාර්ථක විය. කරුණාකර නැවත උත්සාහ කරන්න.",
+      "network_error": "ජාල සම්බන්ධතාවය අසාර්ථක විය. කරුණාකර ඔබේ අන්තර්ජාල සම්බන්ධතාවය පරීක්ෂා කරන්න.",
+      "invalid_credentials": "අවලංගු පිවිසුම් තොරතුරු. කරුණාකර නැවත උත්සාහ කරන්න."
+    }
+  }
+}
+```
+
+#### Tamil (ta)
+```json
+{
+  "messages": {
+    "success": {
+      "payment_completed": "பணம் செலுத்துதல் வெற்றிகரமாக முடிந்தது",
+      "document_uploaded": "ஆவணம் வெற்றிகரமாக பதிவேற்றப்பட்டது",
+      "account_created": "கணக்கு வெற்றிகரமாக உருவாக்கப்பட்டது"
+    },
+    "error": {
+      "payment_failed": "பணம் செலுத்துதல் தோல்வியடைந்தது. தயவுசெய்து மீண்டும் முயற்சிக்கவும்.",
+      "network_error": "நெட்வொர்க் இணைப்பு தோல்வியடைந்தது. தயவுசெய்து உங்கள் இணைய இணைப்பை சரிபார்க்கவும்.",
+      "invalid_credentials": "தவறான உள்நுழைவு விவரங்கள். தயவுசெய்து மீண்டும் முயற்சிக்கவும்."
+    }
+  }
+}
+```
+
+### Message Timing Guidelines
+
+#### Snackbar Duration
+- **Success messages**: 3 seconds
+- **Error messages**: 5 seconds (with action button)
+- **Warning messages**: 5 seconds
+- **Info messages**: 4 seconds
+
+#### Dialog Persistence
+- **Confirmation dialogs**: Until user action
+- **Error dialogs**: Until user dismisses
+- **Success dialogs**: Auto-dismiss after 3 seconds (optional)
+
+#### Banner Messages
+- **System notifications**: Until dismissed or resolved
+- **Feature announcements**: 24 hours or until dismissed
+- **Maintenance alerts**: Until maintenance is complete
+
+### Accessibility Features
+
+#### Screen Reader Support
+- All messages include proper semantic labels
+- Message type is announced along with content
+- Action buttons have descriptive labels
+
+#### Visual Accessibility
+- High contrast colors for different message types
+- Large fonts suitable for elderly users on Temi devices
+- Clear icons that are easily recognizable
+
+#### Voice Interaction
+- Messages can be read aloud using text-to-speech
+- Voice commands can dismiss or act on messages
+- Audio feedback for critical actions
+
+### Error Handling in Messages
+
+#### Network Errors
+```dart
+try {
+  await apiCall();
+  MessageService.showSnackbar(
+    context,
+    context.l10n.paymentCompleted,
+    type: MessageType.success,
+  );
+} on NetworkException {
+  MessageService.showSnackbar(
+    context,
+    context.l10n.networkError,
+    type: MessageType.error,
+    actionLabel: context.l10n.retry,
+    onAction: () => _retryOperation(),
+  );
+} on ValidationException catch (e) {
+  MessageService.showSnackbar(
+    context,
+    e.message,
+    type: MessageType.warning,
+  );
+}
+```
+
+#### Validation Errors
+```dart
+if (!isValidAmount(amount)) {
+  MessageService.showSnackbar(
+    context,
+    context.l10n.invalidAmount,
+    type: MessageType.error,
+  );
+  return;
+}
+```
+
+### Message Queue Management
+
+#### Priority System
+1. **Critical**: Security alerts, system failures
+2. **High**: Payment confirmations, transaction errors
+3. **Medium**: Feature notifications, warnings
+4. **Low**: General information, tips
+
+#### Queue Handling
+- Only one snackbar visible at a time
+- Higher priority messages replace lower priority ones
+- Messages are queued and displayed in order
+- Duplicate messages are filtered out
+
+This comprehensive messaging system ensures consistent, accessible, and user-friendly communication throughout the banking application, specifically optimized for Temi devices and elderly users. 
